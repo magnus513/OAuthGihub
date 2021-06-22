@@ -1,0 +1,31 @@
+{
+  "name": "oauthgihub",
+  "version": "1.0.0",
+  "description": "oauth using github application example from egghead.io",
+  "main": "config.example.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run server & npm run client",
+    "server": "nodemon --experimental-modules server/index.js",
+    "client": "parcel --cache-dir client/.cache --out-dir client/dist client/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "keywords": [
+    "oath"
+  ],
+  "author": "magnus olsson",
+  "license": "ISC",
+  "devDependencies": {
+    "client": "0.0.1",
+    "config": "^3.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "parcel": "^2.0.0-beta.2",
+    "query-string": "^7.0.0",
+    "server": "^1.0.33"
+  }
+}
