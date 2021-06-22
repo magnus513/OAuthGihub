@@ -1,7 +1,7 @@
 import { json } from 'body-parser'
 import { async } from 'q'
 import qs from 'query-string'
-import config from '../config'
+import config from '../config.js'
 
 function askForConsent() {
     const oAuthQueryParams = {
@@ -33,6 +33,11 @@ function handleCode() {
                     'Content-Type': 'application/json'
                 }
             } )
+
+            const data = await res.json()
+            console.log(data)
+            window.location.href = config.REDIRECT_URL
+
         } catch (error) {
             console.log(console.error())
         }
@@ -40,11 +45,12 @@ function handleCode() {
 
 }
 
-const query = qs.stringify(oAuthQueryParams)
-const authorizationUrl = `${config.AUTHORIZATION_ENDPOINT}?${query}`
-const loginLinkEl = document.querySelector('a')
-loginLinkEl.setAttribute('href', authorizationUrl)
+//const query = qs.stringify(oAuthQueryParams)
+//const authorizationUrl = `${config.AUTHORIZATION_ENDPOINT}?${query}`
+//const loginLinkEl = document.querySelector('a')
+//loginLinkEl.setAttribute('href', authorizationUrl)
 
 window.onload = function() {
     askForConsent()
+    handleCode()
 }
