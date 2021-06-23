@@ -36,6 +36,8 @@ function handleCode() {
 
             const data = await res.json()
             console.log(data)
+            localStorage.setItem('jwt', data.jwt)
+            // jwt.io
             window.location.href = config.REDIRECT_URL
 
         } catch (error) {
