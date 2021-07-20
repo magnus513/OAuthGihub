@@ -1,4 +1,5 @@
 import { json } from 'body-parser'
+import fetch from 'node-fetch'
 import { async } from 'q'
 import qs from 'query-string'
 import config from '../config.js'
@@ -52,7 +53,38 @@ function handleCode() {
 //const loginLinkEl = document.querySelector('a')
 //loginLinkEl.setAttribute('href', authorizationUrl)
 
+function protectedRequest() {
+    const requestButton = document.querySelector('button')
+    requestButton.style.display = 'none'
+
+    if(localStorage.getItem('jwt')) {
+        requestButton.style.display = 'block'
+        requestButton.addEventListener('click', function() {
+            fetchRepos()
+        })
+    }
+
+    async function fetchRepos() {
+        const server = 'http://localhost:1235/repos'
+        try {
+            const res = await fetch(server, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('jwt')}`
+                }
+            })
+
+            const data = await res.json()
+            console.log(data)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+}
+
 window.onload = function() {
     askForConsent()
     handleCode()
+    protectedRequest()
 }

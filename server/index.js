@@ -4,12 +4,14 @@ import config from '../config.js'
 import fetch from 'node-fetch'
 import qs from 'qs'
 import JSONWebToken from 'jsonwebtoken'
+import { async } from 'q'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
+const userDatabase = []
 app.post('/code', async function(req, res) {
     try {
         
@@ -17,6 +19,9 @@ app.post('/code', async function(req, res) {
         console.log(token)
         const user = await fetchUser(token)
         const jwt = await encodeJWT(user, token)
+
+        userDatabase.push({ jwt, user, token})
+
         const decoded = await verifyJWT(jwt, token)
         console.log(decoded)
         res.json( {jwt} )
@@ -26,6 +31,23 @@ app.post('/code', async function(req, res) {
     }  
 //    console.log(req.body)
 //    res.json(req.body)
+})
+
+app.get('/repos', async function(req, res) {
+    //console.log('Listening')
+    try {
+        const jwt = req.headers.authorization.split(' ')[1]
+        const user = userDatabase.find(u => u.jwt === jwt)
+        const token = user.token
+
+        await verifyJWT(jwt, token)
+        const repos = await fetchRepos(token)
+        res.json(repos)
+
+    } catch (error) {
+        console.log(error)
+        res.send(error)
+    }
 })
 
 app.listen(1234, function() {
@@ -75,4 +97,15 @@ async function encodeJWT(user, token) {
 
 async function verifyJWT(jwt, token) {
     return JSONWebToken.verify(jwt, token)
+}
+
+async function fetchRepos(token) {
+    const url = `${config.RESOURCE_ENDPOINT}/user/repos?sort=created&direction=desc`
+    const res= await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    return data
 }

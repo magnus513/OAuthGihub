@@ -7,6 +7,6 @@ https://github.com/settings/applications/new
 # Github
 ```
 $git remote add origin git@github.com:magnus513/OAuthGihub.git
-$git branch -M main
-$git push -u origin main
+$git branch -M master
+$git push -u origin master
 ```
